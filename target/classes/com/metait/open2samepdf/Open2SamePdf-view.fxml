@@ -10,13 +10,13 @@
 
 <!-- fx:controller="com.metait.open2samepdf.Open2SamePdfController" -->
 
-<VBox maxWidth="1.7976931348623157E308" prefHeight="218.0" prefWidth="679.0" spacing="5.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1">
+<VBox maxWidth="1.7976931348623157E308" onDragDropped="#handleDrop" onDragOver="#handleDragOver" prefHeight="218.0" prefWidth="679.0" spacing="5.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1">
     <padding>
         <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
     </padding>
    <HBox prefHeight="100.0" prefWidth="200.0" spacing="5.0">
       <children>
-          <Button fx:id="buttonOpen" minHeight="-Infinity" minWidth="-Infinity" onAction="#buttonOpenPressed" prefHeight="25.0" prefWidth="158.0" text="Open pdf 2 times" HBox.hgrow="ALWAYS" />
+          <Button fx:id="buttonOpen" minHeight="-Infinity" minWidth="-Infinity" onAction="#buttonOpenPressed" prefHeight="25.0" prefWidth="175.0" text="Open selected 2 times" HBox.hgrow="ALWAYS" />
          <ComboBox fx:id="comboBoxExtension" maxWidth="1.7976931348623157E308" prefHeight="25.0" prefWidth="513.0" HBox.hgrow="ALWAYS" />
       </children>
    </HBox>
