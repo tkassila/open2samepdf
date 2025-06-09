@@ -1,5 +1,6 @@
 package com.metait.open2samepdf;
 
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
@@ -134,29 +135,40 @@ public class Open2SamePdfController {
     private void open2TempFilesByOSWith(File selectedFile)
     {
 
-        File temp1 = null, temp2 = null;
-        try {
-            temp1 = File.createTempFile(getUniqueFileName("/tmp","pdf"), null);
-            temp1.deleteOnExit();
-            Files.copy(selectedFile.toPath(), temp1.toPath(), StandardCopyOption.REPLACE_EXISTING);
-            temp2 = File.createTempFile(getUniqueFileName("/tmp","pdf"), null);
-            temp2.deleteOnExit();
-            Files.copy(selectedFile.toPath(), temp2.toPath(), StandardCopyOption.REPLACE_EXISTING);
-            textAreaMsg.setText(textAreaMsg.getText() +"\n Open: " +temp1.getAbsolutePath());
-            openFileInPdfReader(temp1);
+        Thread t = new Thread(() -> {
+            //Here write all actions that you want execute on background
+            File temp1 = null, temp2 = null;
             try {
-                Thread.sleep(400);
-            }catch ( InterruptedException ie)
-            {
+                temp1 = File.createTempFile(getUniqueFileName("/tmp","pdf"), null);
+                temp1.deleteOnExit();
+                Files.copy(selectedFile.toPath(), temp1.toPath(), StandardCopyOption.REPLACE_EXISTING);
+                temp2 = File.createTempFile(getUniqueFileName("/tmp","pdf"), null);
+                temp2.deleteOnExit();
+                Files.copy(selectedFile.toPath(), temp2.toPath(), StandardCopyOption.REPLACE_EXISTING);
+                textAreaMsg.setText(textAreaMsg.getText() +"\n Open: " +temp1.getAbsolutePath());
+                openFileInPdfReader(temp1);
+                try {
+                    Thread.sleep(400);
+                }catch ( InterruptedException ie)
+                {
+                }
+                textAreaMsg.setText(textAreaMsg.getText() +"\n Open: " +temp2.getAbsolutePath());
+                openFileInPdfReader(temp2);
+            }catch (IOException | InterruptedException ioe){
+                final String strMsg = "Error occurred in opening: " +ioe.getMessage();
+                Platform.runLater(() -> {
+                    labelMsg2.setText(strMsg);
+                });
+                if (temp1 != null && temp1.exists())
+                    temp1.delete();
+                if (temp2 != null && temp2.exists())
+                    temp2.delete();
+                return;
             }
-            textAreaMsg.setText(textAreaMsg.getText() +"\n Open: " +temp2.getAbsolutePath());
-            openFileInPdfReader(temp2);
-        }catch (IOException | InterruptedException ioe){
-            labelMsg2.setText("Error occured in opening: " +ioe.getMessage());
-            if (temp1 != null && temp1.exists())
-                temp1.delete();
-            if (temp2 != null && temp2.exists())
-                temp2.delete();
-        }
+            Platform.runLater(() -> {
+                labelMsg2.setText("Open files.");
+            });
+        });
+        t.start();
     }
 }
